@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nocturne Notes</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <div>
+            <p class="eyebrow">Nocturne</p>
+            <h1>Notes</h1>
+          </div>
+          <button class="icon-button" id="newNote" aria-label="Create new note">
+            +
+          </button>
+        </div>
+
+        <div class="search">
+          <input type="text" id="searchInput" placeholder="Search your writing" />
+        </div>
+
+        <div class="note-list" id="noteList"></div>
+      </aside>
+
+      <main class="editor">
+        <header class="editor-header">
+          <div>
+            <input type="text" id="noteTitle" placeholder="Untitled" />
+            <p class="meta" id="noteMeta">Select a note to begin.</p>
+          </div>
+          <div class="header-actions">
+            <button class="ghost" id="favoriteNote">☆ Favorite</button>
+            <button class="ghost" id="exportNote">Export</button>
+            <button class="danger" id="deleteNote">Delete</button>
+          </div>
+        </header>
+
+        <section class="editor-body">
+          <textarea
+            id="noteBody"
+            placeholder="Write poetry, sketches, lyrics..."
+          ></textarea>
+          <div class="empty" id="emptyState">
+            <h2>Your quiet space</h2>
+            <p>Create a note to start writing.</p>
+          </div>
+        </section>
+
+        <footer class="editor-footer">
+          <div class="status" id="syncStatus">Saved locally.</div>
+          <div class="stats">
+            <span id="noteCount">0 notes</span>
+            <span>•</span>
+            <span id="wordCount">0 words</span>
+          </div>
+          <div class="version">v<span id="appVersion"></span></div>
+        </footer>
+      </main>
+    </div>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>
