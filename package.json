@@ -1,0 +1,16 @@
+{
+  "name": "nocturne-notes",
+  "version": "0.1.0",
+  "description": "Minimalist dark notes app for poems and writing.",
+  "main": "main.js",
+  "author": "",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "lint": "echo \"No lint configured\""
+  },
+  "devDependencies": {
+    "electron": "^30.0.0"
+  }
+}

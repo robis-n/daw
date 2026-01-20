@@ -1,0 +1,212 @@
+:root {
+  color-scheme: dark;
+  --bg: #0f1115;
+  --panel: #141821;
+  --panel-soft: #181d28;
+  --accent: #7e8ce0;
+  --accent-strong: #a1b0ff;
+  --text: #e6e9f2;
+  --muted: #a7b0c2;
+  --border: rgba(255, 255, 255, 0.08);
+  --danger: #f06a6a;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  height: 100vh;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  height: 100vh;
+}
+
+.sidebar {
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand h1 {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+}
+
+.icon-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel-soft);
+  color: var(--text);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.search input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--panel-soft);
+  border: 1px solid transparent;
+  color: var(--text);
+}
+
+.search input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.note-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.note-card {
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background: var(--panel-soft);
+  padding: 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.note-card.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(126, 140, 224, 0.2);
+}
+
+.note-card h3 {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.note-card p {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.editor-header input {
+  font-size: 28px;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  width: 100%;
+}
+
+.editor-header input:focus {
+  outline: none;
+}
+
+.meta {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.header-actions button {
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.header-actions .ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.header-actions .danger {
+  color: var(--danger);
+}
+
+.editor-body {
+  flex: 1;
+  padding: 24px 32px;
+}
+
+.editor-body textarea {
+  width: 100%;
+  height: 100%;
+  border: none;
+  resize: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.editor-body textarea:focus {
+  outline: none;
+}
+
+.editor-footer {
+  border-top: 1px solid var(--border);
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.status {
+  color: var(--accent-strong);
+}
