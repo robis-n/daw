@@ -34,6 +34,7 @@
           </div>
           <div class="header-actions">
             <button class="ghost" id="favoriteNote">☆ Favorite</button>
+            <button class="ghost" id="exportNote">Export</button>
             <button class="danger" id="deleteNote">Delete</button>
           </div>
         </header>
@@ -43,10 +44,19 @@
             id="noteBody"
             placeholder="Write poetry, sketches, lyrics..."
           ></textarea>
+          <div class="empty" id="emptyState">
+            <h2>Your quiet space</h2>
+            <p>Create a note to start writing.</p>
+          </div>
         </section>
 
         <footer class="editor-footer">
           <div class="status" id="syncStatus">Saved locally.</div>
+          <div class="stats">
+            <span id="noteCount">0 notes</span>
+            <span>•</span>
+            <span id="wordCount">0 words</span>
+          </div>
           <div class="version">v<span id="appVersion"></span></div>
         </footer>
       </main>

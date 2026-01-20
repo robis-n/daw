@@ -6,10 +6,13 @@ const searchInput = document.getElementById("searchInput");
 const newNoteButton = document.getElementById("newNote");
 const deleteNoteButton = document.getElementById("deleteNote");
 const favoriteNoteButton = document.getElementById("favoriteNote");
+const exportNoteButton = document.getElementById("exportNote");
 const syncStatus = document.getElementById("syncStatus");
 const appVersion = document.getElementById("appVersion");
+const wordCount = document.getElementById("wordCount");
+const noteCount = document.getElementById("noteCount");
+const emptyState = document.getElementById("emptyState");
 
-const STORAGE_KEY = "nocturne-notes";
 const DEFAULT_NOTE = {
   id: crypto.randomUUID(),
   title: "First Light",
@@ -22,22 +25,7 @@ let notes = [];
 let activeNoteId = null;
 let debounceTimer;
 
-const loadNotes = () => {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) {
-    notes = [DEFAULT_NOTE];
-    saveNotes();
-  } else {
-    notes = JSON.parse(raw);
-  }
-
-  activeNoteId = notes[0]?.id ?? null;
-};
-
-const saveNotes = () => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
-  syncStatus.textContent = "Saved locally.";
-};
+const storage = window.nocturne?.notes;
 
 const formatDate = (iso) => {
   const date = new Date(iso);
@@ -47,6 +35,28 @@ const formatDate = (iso) => {
     hour: "2-digit",
     minute: "2-digit",
   });
+};
+
+const countWords = (text) => {
+  if (!text) {
+    return 0;
+  }
+  return text.trim().split(/\s+/).filter(Boolean).length;
+};
+
+const updateStats = () => {
+  const current = notes.find((item) => item.id === activeNoteId);
+  noteCount.textContent = `${notes.length} ${notes.length === 1 ? "note" : "notes"}`;
+  wordCount.textContent = `${countWords(current?.body)} words`;
+  emptyState.classList.toggle("show", !current);
+};
+
+const saveNotes = async () => {
+  if (!storage) {
+    return;
+  }
+  await storage.save(notes);
+  syncStatus.textContent = "Saved to disk.";
 };
 
 const renderNoteList = () => {
@@ -89,6 +99,11 @@ const selectNote = (noteId) => {
   activeNoteId = noteId;
   const note = notes.find((item) => item.id === noteId);
   if (!note) {
+    noteTitle.value = "";
+    noteBody.value = "";
+    noteMeta.textContent = "Select a note to begin.";
+    favoriteNoteButton.textContent = "☆ Favorite";
+    updateStats();
     return;
   }
 
@@ -96,10 +111,11 @@ const selectNote = (noteId) => {
   noteBody.value = note.body;
   noteMeta.textContent = `Last edited ${formatDate(note.updatedAt)}`;
   favoriteNoteButton.textContent = note.favorite ? "★ Favorited" : "☆ Favorite";
+  updateStats();
   renderNoteList();
 };
 
-const updateActiveNote = () => {
+const updateActiveNote = async () => {
   const note = notes.find((item) => item.id === activeNoteId);
   if (!note) {
     return;
@@ -110,8 +126,9 @@ const updateActiveNote = () => {
   note.updatedAt = new Date().toISOString();
 
   noteMeta.textContent = `Last edited ${formatDate(note.updatedAt)}`;
-  saveNotes();
+  await saveNotes();
   renderNoteList();
+  updateStats();
 };
 
 const scheduleSave = () => {
@@ -120,7 +137,7 @@ const scheduleSave = () => {
   debounceTimer = setTimeout(updateActiveNote, 250);
 };
 
-const createNote = () => {
+const createNote = async () => {
   const newNote = {
     id: crypto.randomUUID(),
     title: "Untitled",
@@ -130,12 +147,12 @@ const createNote = () => {
   };
   notes.unshift(newNote);
   activeNoteId = newNote.id;
-  saveNotes();
+  await saveNotes();
   renderNoteList();
   selectNote(activeNoteId);
 };
 
-const deleteNote = () => {
+const deleteNote = async () => {
   if (!activeNoteId) {
     return;
   }
@@ -147,32 +164,61 @@ const deleteNote = () => {
   }
 
   activeNoteId = notes[0].id;
-  saveNotes();
+  await saveNotes();
   renderNoteList();
   selectNote(activeNoteId);
 };
 
-const toggleFavorite = () => {
+const toggleFavorite = async () => {
   const note = notes.find((item) => item.id === activeNoteId);
   if (!note) {
     return;
   }
 
   note.favorite = !note.favorite;
-  saveNotes();
+  await saveNotes();
   renderNoteList();
   selectNote(note.id);
+};
+
+const exportNote = async () => {
+  const note = notes.find((item) => item.id === activeNoteId);
+  if (!note || !storage) {
+    return;
+  }
+
+  syncStatus.textContent = "Exporting...";
+  const result = await storage.export({ title: note.title, body: note.body });
+  syncStatus.textContent = result?.ok ? "Exported." : "Export canceled.";
+};
+
+const loadNotes = async () => {
+  if (!storage) {
+    notes = [DEFAULT_NOTE];
+    activeNoteId = notes[0].id;
+    return;
+  }
+
+  const loaded = await storage.load();
+  if (Array.isArray(loaded) && loaded.length > 0) {
+    notes = loaded;
+  } else {
+    notes = [DEFAULT_NOTE];
+  }
+  activeNoteId = notes[0]?.id ?? null;
 };
 
 searchInput.addEventListener("input", renderNoteList);
 newNoteButton.addEventListener("click", createNote);
 deleteNoteButton.addEventListener("click", deleteNote);
 favoriteNoteButton.addEventListener("click", toggleFavorite);
+exportNoteButton.addEventListener("click", exportNote);
 noteTitle.addEventListener("input", scheduleSave);
 noteBody.addEventListener("input", scheduleSave);
 
-appVersion.textContent = window.nocturne?.version ?? "0.1.0";
+appVersion.textContent = window.nocturne?.version ?? "0.2.0";
 
-loadNotes();
-renderNoteList();
-selectNote(activeNoteId);
+loadNotes().then(() => {
+  renderNoteList();
+  selectNote(activeNoteId);
+});

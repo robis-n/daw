@@ -4,10 +4,10 @@ A dark, minimalistic writing space for poems, lyrics, and reflections. Designed 
 
 ## Features
 
-- Distraction-free editor with autosave
-- Quick note list with search
-- Favorite important drafts
-- Offline-first local storage
+- Distraction-free editor with autosave to disk
+- Quick note list with search and favorites
+- Offline-first local storage (JSON in the user data folder)
+- Export individual notes to `.txt`
 
 ## Getting Started
 
@@ -22,6 +22,10 @@ npm install
 ```bash
 npm start
 ```
+
+## Data Storage
+
+Notes are stored in a `notes.json` file inside Electron's user data directory. This means your notes stay on your machine and are not synced to the cloud unless you add it later.
 
 ## Future Enhancements
 
